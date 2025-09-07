@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  todo-mysql:
+    image: mysql:8
+    container_name: todo-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    networks:
+      - todo-network
+
+  redis:
+    image: "redis:latest"
+    container_name: "redis_cache"
+    ports:
+      - "6379:6379"
+    networks:
+      - todo-network
+
+  todo-app:
+    build: .
+    container_name: todo-app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - todo-mysql
+      - redis
+    networks:
+      - todo-network
+
+networks:
+  todo-network:
+    driver: bridge
